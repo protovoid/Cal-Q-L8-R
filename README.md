@@ -1,2 +1,2 @@
 # Cal-Q-L8-R
-calculator
+calculator from Standford iOS 9 Apps with Swift course
