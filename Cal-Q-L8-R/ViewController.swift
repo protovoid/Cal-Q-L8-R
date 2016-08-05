@@ -59,6 +59,18 @@ class ViewController: UIViewController {
       }
     displayValue = brain.result
     }
+  
+  var decimalPressed = false
+  
+  @IBAction func decimalButtonPressed(sender: UIButton) {
+    userIsInTheMiddleOfTyping = true
+    if decimalPressed == false {
+      display.text = display.text! + "."
+      decimalPressed = true 
+    }
+  }
+  
+  
 
 
   @IBAction func clearDisplayButton(sender: UIButton) {
