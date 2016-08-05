@@ -49,6 +49,10 @@ class CalculatorBrain
     }
     }
   
+  func clearDisplay() {
+    accumulator = 0
+  }
+  
   private func executePendingBinaryOperation()
   {
     if pending != nil {

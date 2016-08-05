@@ -61,6 +61,11 @@ class ViewController: UIViewController {
     }
 
 
+  @IBAction func clearDisplayButton(sender: UIButton) {
+    userIsInTheMiddleOfTyping = false
+    brain.clearDisplay()
+    displayValue = 0
+  }
   
   
   
