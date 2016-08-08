@@ -14,6 +14,19 @@ class CalculatorBrain
 {
   private var accumulator = 0.0
   
+  private var description: String {
+    get {
+      return "" // sequence of operands that led to value returned by result
+      // "=" and "..." should never appear
+  }
+    set {
+      // ???
+    }
+  }
+  
+  private var isPartialResult = false
+  // needs to return true if binary operation pending, otherwise false
+  
   func setOperand(operand: Double) {
     accumulator = operand
   }

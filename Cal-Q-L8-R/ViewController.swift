@@ -29,7 +29,7 @@ class ViewController: UIViewController {
   }
   
   private var displayValue: Double  {
-    get{
+    get {
       return Double(display.text!)!
     }
     set {
@@ -49,16 +49,16 @@ class ViewController: UIViewController {
       brain.performOperation(mathematicalSymbol)
       
       /* // moved into CalculatorBrain.swift model file
-      if mathematicalSymbol == "π" {
-        displayValue = M_PI
-        // display.text = String(M_PI)
-      } else if mathematicalSymbol == "√" {
-        displayValue = sqrt(displayValue)
+       if mathematicalSymbol == "π" {
+       displayValue = M_PI
+       // display.text = String(M_PI)
+       } else if mathematicalSymbol == "√" {
+       displayValue = sqrt(displayValue)
        */
       
-      }
-    displayValue = brain.result
     }
+    displayValue = brain.result
+  }
   
   var decimalPressed = false
   
@@ -66,13 +66,13 @@ class ViewController: UIViewController {
     userIsInTheMiddleOfTyping = true
     if decimalPressed == false {
       display.text = display.text! + "."
-      decimalPressed = true 
+      decimalPressed = true
     }
   }
   
   
-
-
+  
+  
   @IBAction func clearDisplayButton(sender: UIButton) {
     userIsInTheMiddleOfTyping = false
     brain.clearDisplay()
@@ -84,8 +84,8 @@ class ViewController: UIViewController {
   
   
   
-
-
-
+  
+  
+  
 }
 
