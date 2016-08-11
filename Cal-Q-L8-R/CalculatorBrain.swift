@@ -14,17 +14,26 @@ class CalculatorBrain
 {
   private var accumulator = 0.0
   
-  private var description: String {
+  private var descriptionAccumulator = "0"
+  
+  var description: String {
     get {
-      return "" // sequence of operands that led to value returned by result
-      // "=" and "..." should never appear
+      if pending == nil {
+        return descriptionAccumulator
+      } else {
+        return pending!.descriptionFunction(pending!.descriptionOperand, pending!.descriptionOperand != descriptionAccumulator ? descriptionAccumulator : "")
+      }
+
   }
-    set {
-      // ???
+
+    }
+  
+  
+  var isPartialResult: Bool {
+    get {
+      return pending != nil
     }
   }
-  
-  private var isPartialResult = false
   // needs to return true if binary operation pending, otherwise false
   
   func setOperand(operand: Double) {
@@ -42,7 +51,8 @@ class CalculatorBrain
     "÷" : Operation.BinaryOperation({ $0 / $1 }),
     "+" : Operation.BinaryOperation({ $0 + $1 }),
     "-" : Operation.BinaryOperation({ $0 - $1 }),
-    "=" : Operation.Equals
+    "=" : Operation.Equals,
+    "rand" : Operation.NullaryOperation(drand48, "rand()")
     
   ]
   
@@ -51,16 +61,33 @@ class CalculatorBrain
     case UnaryOperation((Double) -> Double)
     case BinaryOperation((Double, Double) -> Double)
     case Equals
+    case NullaryOperation(() -> Double, String)
   }
+  
+  private var currentPrecedence = Int.max
   
   func performOperation(symbol: String) {
     if let operation = operations[symbol] {
       switch operation {
       case .Constant(let value): accumulator = value
-      case .UnaryOperation(let function): accumulator = function(accumulator)
-      case .BinaryOperation(let function): pending = PendingBinaryOperationInfo(binaryFunction: function, firstOperand: accumulator)
+        
+      case .UnaryOperation(let function, let descriptionFunction): accumulator = function(accumulator)
+        descriptionAccumulator = descriptionFunction(descriptionAccumulator)
+        
+      case .BinaryOperation(let function, let descriptionFunction, let precedence): executePendingBinaryOperation()
+      if currentPrecedence < precedence {
+        descriptionAccumulator = "(" + descriptionAccumulator + ")"
+        }
+        currentPrecedence = precedence
+        pending = PendingBinaryOperationInfo(binaryFunction: function, firstOperand: accumulator, descriptionFunction: descriptionFunction, descriptionOperand: descriptionAccumulator)
+      
+      // pending = PendingBinaryOperationInfo(binaryFunction: function, firstOperand: accumulator)
+        
       case .Equals:
         executePendingBinaryOperation()
+      case .NullaryOperation(let function, let descriptionValue):
+        accumulator = function()
+        descriptionAccumulator = descriptionValue
               }
     }
     }
@@ -83,6 +110,8 @@ class CalculatorBrain
   private struct PendingBinaryOperationInfo {
     var binaryFunction: (Double, Double) -> Double
     var firstOperand: Double
+    var descriptionFunction: (String, String) -> String
+    var descriptionOperand: String
   }
     
     /*
