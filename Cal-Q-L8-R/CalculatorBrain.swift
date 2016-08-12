@@ -43,14 +43,14 @@ class CalculatorBrain
   private var operations: Dictionary<String,Operation> = [
     "π" : Operation.Constant(M_PI),
     "e" : Operation.Constant(M_E),
-    "√" : Operation.UnaryOperation(sqrt),
-    "sin" : Operation.UnaryOperation(sin),
-    "cos" : Operation.UnaryOperation(cos),
-    "tan" : Operation.UnaryOperation(tan),
-    "×" : Operation.BinaryOperation({ $0 * $1 }),
-    "÷" : Operation.BinaryOperation({ $0 / $1 }),
-    "+" : Operation.BinaryOperation({ $0 + $1 }),
-    "-" : Operation.BinaryOperation({ $0 - $1 }),
+    "√" : Operation.UnaryOperation(sqrt, { "√(" + $0 + ")"}),
+    "sin" : Operation.UnaryOperation(sin, { "sin(" + $0 + ")"}),
+    "cos" : Operation.UnaryOperation(cos, { "cos(" + $0 + ")"}),
+    "tan" : Operation.UnaryOperation(tan, { "tan(" + $0 + ")"}),
+    "×" : Operation.BinaryOperation(*, { $0 + " x " + $1 }, 1),
+    "÷" : Operation.BinaryOperation(/, { $0 + " ÷ " + $1 }, 1),
+    "+" : Operation.BinaryOperation(+, { $0 + " + " + $1 }, 0),
+    "-" : Operation.BinaryOperation(-, { $0 + " - " + $1 }, 0),
     "=" : Operation.Equals,
     "rand" : Operation.NullaryOperation(drand48, "rand()")
     
@@ -58,8 +58,8 @@ class CalculatorBrain
   
   private enum Operation {
     case Constant(Double)
-    case UnaryOperation((Double) -> Double)
-    case BinaryOperation((Double, Double) -> Double)
+    case UnaryOperation((Double) -> Double, (String) -> String)
+    case BinaryOperation((Double, Double) -> Double, (String, String) -> String, Int)
     case Equals
     case NullaryOperation(() -> Double, String)
   }
