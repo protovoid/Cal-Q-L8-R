@@ -47,12 +47,17 @@ class CalculatorBrain
     "sin" : Operation.unaryOperation(sin, { "sin(" + $0 + ")"}),
     "cos" : Operation.unaryOperation(cos, { "cos(" + $0 + ")"}),
     "tan" : Operation.unaryOperation(tan, { "tan(" + $0 + ")"}),
+    
+    "±" : Operation.unaryOperation({ -$0 }, { "-(" + $0 + ")"}),
+    
+    
     "×" : Operation.binaryOperation(*, { $0 + " × " + $1 }, 1),
     "÷" : Operation.binaryOperation(/, { $0 + " ÷ " + $1 }, 1),
     "+" : Operation.binaryOperation(+, { $0 + " + " + $1 }, 0),
     "-" : Operation.binaryOperation(-, { $0 + " - " + $1 }, 0),
     "=" : Operation.equals,
-    "rand" : Operation.nullaryOperation(drand48, "rand()")
+    "rand" : Operation.nullaryOperation(drand48, "rand()"),
+    
     
   ]
   
@@ -85,6 +90,7 @@ class CalculatorBrain
         
       case .equals:
         executePendingBinaryOperation()
+        
       case .nullaryOperation(let function, let descriptionValue):
         accumulator = function()
         descriptionAccumulator = descriptionValue

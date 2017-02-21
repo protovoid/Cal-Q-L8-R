@@ -42,7 +42,7 @@
                                                         <rect key="frame" x="0.0" y="0.0" width="60.5" height="108"/>
                                                         <color key="backgroundColor" red="0.33333333333333331" green="0.33333333333333331" blue="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="30"/>
-                                                        <state key="normal" title="+/-"/>
+                                                        <state key="normal" title="±"/>
                                                         <connections>
                                                             <action selector="performOperation:" destination="BYZ-38-t0r" eventType="touchUpInside" id="6jg-jT-m3e"/>
                                                         </connections>
