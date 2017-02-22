@@ -13,6 +13,7 @@ import Foundation
 class CalculatorBrain
 {
   fileprivate var accumulator = 0.0
+  fileprivate var internalProgram = [AnyObject]()
   
   fileprivate var descriptionAccumulator = "0"
   
@@ -38,7 +39,19 @@ class CalculatorBrain
   
   func setOperand(_ operand: Double) {
     accumulator = operand
+    internalProgram.append(operand as AnyObject)
   }
+  
+  
+  /*
+   // for x! enum below
+  func factorial(op1: Double) -> Double {
+    if (op1 <= 1) {
+      return 1
+    }
+    return op1 * factorial(op1: op1 - 1.0)
+  }
+ */
   
   fileprivate var operations: Dictionary<String,Operation> = [
     "π" : Operation.constant(M_PI),
@@ -47,16 +60,33 @@ class CalculatorBrain
     "sin" : Operation.unaryOperation(sin, { "sin(" + $0 + ")"}),
     "cos" : Operation.unaryOperation(cos, { "cos(" + $0 + ")"}),
     "tan" : Operation.unaryOperation(tan, { "tan(" + $0 + ")"}),
-    
     "±" : Operation.unaryOperation({ -$0 }, { "-(" + $0 + ")"}),
-    
-    
     "×" : Operation.binaryOperation(*, { $0 + " × " + $1 }, 1),
     "÷" : Operation.binaryOperation(/, { $0 + " ÷ " + $1 }, 1),
     "+" : Operation.binaryOperation(+, { $0 + " + " + $1 }, 0),
     "-" : Operation.binaryOperation(-, { $0 + " - " + $1 }, 0),
     "=" : Operation.equals,
     "rand" : Operation.nullaryOperation(drand48, "rand()"),
+    
+    /*
+     NOT YET IMPLEMENTED
+    "x²" : Operation.unaryOperation({ pow($0, 2) }, { "(" + $0 + ")²"}),
+    "x³" : Operation.unaryOperation({ pow($0, 3) }, { "(" + $0 + ")³"}),
+    "x⁻¹" : Operation.UnaryOperation({ 1 / $0 }, { "(" + $0 + ")⁻¹"}),
+    "sinh" : Operation.UnaryOperation(sinh, { "sinh(" + $0 + ")"}),
+    "cosh" : Operation.UnaryOperation(cosh, { "cosh(" + $0 + ")"}),
+    "tanh" : Operation.UnaryOperation(tanh, { "tanh(" + $0 + ")"}),
+    "ln" : Operation.UnaryOperation(log, { "ln(" + $0 + ")"}),
+    "log" : Operation.UnaryOperation(log10, { "log(" + $0 + ")"}),
+    "eˣ" : Operation.UnaryOperation(exp, { "e^(" + $0 + ")"}),
+    "10ˣ" : Operation.UnaryOperation({ pow(10, $0) }, { "10^(" + $0 + ")"}),
+    "x!" : Operation.UnaryOperation(factorial, { "(" + $0 + ")!"}),
+    "xʸ" : Operation.BinaryOperation(pow, { $0 + " ^ " + $1 }, 2),
+    */
+    
+    
+    
+    
     
     
   ]
@@ -72,6 +102,7 @@ class CalculatorBrain
   fileprivate var currentPrecedence = Int.max
   
   func performOperation(_ symbol: String) {
+    internalProgram.append(symbol as AnyObject)
     if let operation = operations[symbol] {
       switch operation {
       case .constant(let value): accumulator = value
@@ -99,7 +130,9 @@ class CalculatorBrain
     }
   
   func clearDisplay() {
-    accumulator = 0
+    accumulator = 0.0
+    pending = nil
+    internalProgram.removeAll()
   }
   
   fileprivate func executePendingBinaryOperation()
@@ -128,6 +161,25 @@ class CalculatorBrain
      }
      */
   
+  typealias PropertyList = AnyObject
+  
+  var program: PropertyList {
+    get {
+      return internalProgram as CalculatorBrain.PropertyList
+    }
+    set {
+      clearDisplay()
+      if let arrayOfOps = newValue as? [AnyObject] {
+        for op in arrayOfOps {
+          if let operand = op as? Double {
+            setOperand(operand)
+          } else if let operation = op as? String {
+            performOperation(operation)
+          }
+        }
+      }
+    }
+  }
   
   var result: Double {
     get {
