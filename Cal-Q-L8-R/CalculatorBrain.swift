@@ -17,6 +17,13 @@ class CalculatorBrain
   
   fileprivate var descriptionAccumulator = "0"
   
+  /*
+  func addUnaryOperation(symbol: String, operation: (Double) -> Double) {
+    operations[symbol] = Operation.unaryOperation(operation)
+  }
+ */
+  
+  // add a string which returns description of sequence of operands and operations that led to result
   var description: String {
     get {
       if pending == nil {
